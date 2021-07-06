@@ -105,4 +105,5 @@ Annotations:               nginx.ingress.kubernetes.io/rewrite-target: /
 Events:                    <none>
 
 ```
+# home LAN NATing from external IP address / port 80 to cluster's LAN address and ingress controller's port number.
 So, on my home LAN http://192.168.100.174:30410 is where incoming web traffic enters.  The ingress controller parses for camptonhillsweather.com and redirects the traffic to the chwcom service. I have an external IP address for my home LAN that gets NAT'd by my home router to 192.168.100.174.  On that NAT box, I map port 80 to port 30410. As you can see from the get ingress command, I also am running a wordpress application with another URL, but also mapped to the same IP address and port number.  The ingress control does a reverse proxy function and splits the wordpress traffic off to the nginx-wordpress-ingress resource. 
