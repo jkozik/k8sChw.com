@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chwcom
+  labels:
+    app: chwcom
+spec:
+  selector:
+    matchLabels:
+      app: chwcom
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: chwcom
+    spec:
+      containers:
+      - image: jkozik/chw.com:v1
+        name: chwcom
+        ports:
+        - containerPort: 80
+          name: chwcom
+        volumeMounts:
+        - name: chwcom-persistent-storage
+          mountPath: "/var/www/html/mount" 
+      volumes:
+      - name: chwcom-persistent-storage
+        persistentVolumeClaim:
+          claimName: chwcom-persistent-storage
