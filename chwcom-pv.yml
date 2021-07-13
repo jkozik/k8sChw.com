@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: chwcom-persistent-storage
+  labels:
+    app: chwcom
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadOnlyMany
+  nfs:
+    server: 192.168.101.152
+    # Exported path of your NFS server
+    #     path: "/var/nfsshare/nginxhtml"  # make sure this directory exists.
+    path: "/home/weather/public_html"
+  storageClassName: nfs
