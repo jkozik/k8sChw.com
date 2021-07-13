@@ -1,5 +1,5 @@
 # k8sChw.com
-Setup camptonhillsweather.com in a kubernetes cluster.  
+Setup camptonhillsweather.com in a kubernetes cluster as deployment named chwcom; expose as service chwcom; connect to the internet as camptonhillsweather.com through an ingress called chwcom-ingress. Get realtime weather data from an NFS mount on my local host through the PV/PVC named chwcom-persistent-storage.
 
 Source image [InstallCHW.com](https://github.com/jkozik/InstallCHW.com)
 
@@ -105,5 +105,67 @@ Annotations:               nginx.ingress.kubernetes.io/rewrite-target: /
 Events:                    <none>
 
 ```
-# home LAN NATing from external IP address / port 80 to cluster's LAN address and ingress controller's port number.
+## home LAN NATing from external IP address / port 80 to cluster's LAN address and ingress controller's port number.
 So, on my home LAN http://192.168.100.174:30410 is where incoming web traffic enters.  The ingress controller parses for camptonhillsweather.com and redirects the traffic to the chwcom service. I have an external IP address for my home LAN that gets NAT'd by my home router to 192.168.100.174.  On that NAT box, I map port 80 to port 30410. As you can see from the get ingress command, I also am running a wordpress application with another URL, but also mapped to the same IP address and port number.  The ingress control does a reverse proxy function and splits the wordpress traffic off to the nginx-wordpress-ingress resource. 
+## All in one step
+I prefer to incrementally deploy the app incrementaly: pv, pvc, deployment, service, ingress.  As an alternative, just apply all the yaml files at once.  On the kubectl host, run the following to deploy all in one command:
+```
+[jkozik@dell2 ~]$ git clone https://github.com/jkozik/k8sChw.com
+Cloning into 'k8sChw.com'...
+remote: Enumerating objects: 20, done.
+remote: Counting objects: 100% (20/20), done.
+remote: Compressing objects: 100% (16/16), done.
+Unpacking objects: 100% (20/20), done.
+remote: Total 20 (delta 3), reused 10 (delta 1), pack-reused 0
+
+[jkozik@dell2 ~]$ cd k8sChw.com/
+[jkozik@dell2 k8sChw.com]$ ls
+chwcom-deploy.yml  chwcom-ingress.yml  chwcom-pvc.yml  chwcom-pv.yml  chwcom-svc.yml  README.md
+
+[jkozik@dell2 k8sChw.com]$ kubectl apply -f .
+deployment.apps/chwcom created
+ingress.networking.k8s.io/chwcom-ingress unchanged
+persistentvolume/chwcom-persistent-storage created
+persistentvolumeclaim/chwcom-persistent-storage created
+service/chwcom created
+
+[jkozik@dell2 k8sChw.com]$ kubectl get all
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/chwcom-6c8689bfbc-zwpgz                1/1     Running   0          16s
+
+NAME                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+service/chwcom            NodePort    10.100.69.153    <none>        80:32703/TCP   16s
+service/kubernetes        ClusterIP   10.96.0.1        <none>        443/TCP        40d
+
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/chwcom                1/1     1            1           16s
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/chwcom-6c8689bfbc                1         1         1       16s
+
+[jkozik@dell2 k8sChw.com]$ kubectl get ingress
+NAME                      CLASS    HOSTS                     ADDRESS           PORTS   AGE
+chwcom-ingress            <none>   camptonhillsweather.com   192.168.100.174   80      8d
+
+[jkozik@dell2 k8sChw.com]$ kubectl get pv,pvc
+NAME                                            CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM                                  STORAGECLASS   REASON   AGE
+persistentvolume/chwcom-persistent-storage      1Gi        ROX            Retain           Bound    default/chwcom-persistent-storage      nfs                     4m59s
+NAME                                                 STATUS   VOLUME                         CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+persistentvolumeclaim/chwcom-persistent-storage      Bound    chwcom-persistent-storage      1Gi        ROX            nfs            4m59s
+
+[jkozik@dell2 k8sChw.com]$ curl camptonhillsweather.com | head
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:--  0:00:11 --:--:--     0<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <!-- ##### start AJAX mods ##### -->
+    <script type="text/javascript" src="ajaxCUwx.js"></script>
+    <!-- AJAX updates by Ken True - http://saratoga-weather.org/wxtemplates/ -->
+    <script type="text/javascript" src="ajaxgizmo.js"></script>
+    <script type="text/javascript" src="language-en.js"></script>
+        <!-- language for AJAX script included -->
+100  8053    0  8053    0     0    682      0 --:--:--  0:00:11 --:--:--  1729
+```
