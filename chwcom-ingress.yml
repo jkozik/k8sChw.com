@@ -4,7 +4,12 @@ metadata:
   name: chwcom-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
+  tls:
+  - hosts:
+    - camptonhillsweather.com
+    secretName: camptonhillsweather-com-tls
   rules:
   - host: camptonhillsweather.com
     http:
