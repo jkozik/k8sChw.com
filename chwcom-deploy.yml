@@ -16,7 +16,7 @@ spec:
         app: chwcom
     spec:
       containers:
-      - image: jkozik/chw.com:v1.1
+      - image: jkozik/chw.com:v1.2
         name: chwcom
         ports:
         - containerPort: 80
