@@ -18,6 +18,14 @@ spec:
       containers:
       - image: jkozik/chw.com:v1.7
         name: chwcom
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            ephemeral-storage: 10M
+            memory: 100M
+          limits:
+            ephemeral-storage: 20M
+            memory: 200M          
         ports:
         - containerPort: 80
           name: chwcom
