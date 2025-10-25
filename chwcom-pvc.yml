@@ -9,5 +9,5 @@ spec:
     - ReadOnlyMany
   resources:
     requests:
-      storage: 1Gi
-  storageClassName: nfs
+      storage: 5Gi
+  storageClassName: nfs-weather      #nfs

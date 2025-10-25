@@ -6,12 +6,12 @@ metadata:
     app: chwcom
 spec:
   capacity:
-    storage: 1Gi
+    storage: 5Gi
   accessModes:
     - ReadOnlyMany
   nfs:
-    server: 192.168.101.152
+    server: 192.168.100.153      #192.168.101.152
     # Exported path of your NFS server
     #     path: "/var/nfsshare/nginxhtml"  # make sure this directory exists.
-    path: "/home/weather/public_html"
-  storageClassName: nfs
+    path: "/home/nfs/weather-stations/chwcom/public_html"     #"/home/weather/public_html"
+  storageClassName: nfs-weather      #nfs
