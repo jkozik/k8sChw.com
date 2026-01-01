@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: chwcom-route
+  namespace: default
+spec:
+  parentRefs:
+  - name: weather-gateway
+    namespace: envoy-gateway-system
+  hostnames:
+  - "camptonhillsweather.com"
+  - "www.camptonhillsweather.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: "/"
+    backendRefs:
+    - name: chwcom
+      port: 80

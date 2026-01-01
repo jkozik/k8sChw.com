@@ -169,3 +169,10 @@ persistentvolumeclaim/chwcom-persistent-storage      Bound    chwcom-persistent-
         <!-- language for AJAX script included -->
 100  8053    0  8053    0     0    682      0 --:--:--  0:00:11 --:--:--  1729
 ```
+## Ingress --> HttpRoute
+I have installed the Gateway API on this cluster.  It is called ` Gateway running in `envoy-gateway-system` namespace.
+
+The HTTPRoute yaml points camptonhillsweather.com and www.camptonhillsweather.com from my Cloudflare tunnel to port 30458.
+
+Ingress has been depricated.
+
