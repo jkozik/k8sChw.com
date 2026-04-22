@@ -5,6 +5,7 @@ metadata:
   labels:
     app: chwcom
 spec:
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: chwcom
