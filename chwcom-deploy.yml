@@ -5,6 +5,7 @@ metadata:
   labels:
     app: chwcom
 spec:
+  replicas: 2
   revisionHistoryLimit: 2
   selector:
     matchLabels:
@@ -16,8 +17,15 @@ spec:
       labels:
         app: chwcom
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: chwcom
+            topologyKey: kubernetes.io/hostname      
       containers:
-      - image: jkozik/chw.com:v1.12b
+      - image: jkozik/chw.com:v1.13
         name: chwcom
         imagePullPolicy: IfNotPresent
         resources:
