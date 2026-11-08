@@ -1,3 +1,5 @@
+> **RETIRED 2026-11-08** — camptonhillsweather.com was shut down. The deployment, service and HTTPRoute were deleted from the cluster; the manifests are kept for reference and can be re-applied to restore the site. The PV/PVC `chwcom-persistent-storage` was left in place (NFS data retained).
+
 # k8sChw.com
 
 Setup camptonhillsweather.com in a Kubernetes cluster as deployment named chwcom; expose as
